@@ -15,7 +15,7 @@ export default function PlagiarismCheck() {
             <Head title="Periksa Plagiasi" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <h1>Hello World</h1>
+                <h1>Dropzone</h1>
             </div>
         </AppLayout>
     );
