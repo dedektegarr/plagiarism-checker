@@ -1,3 +1,4 @@
+import DropzoneUpload from '@/components/dropzone-upload';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -15,7 +16,9 @@ export default function PlagiarismCheck() {
             <Head title="Periksa Plagiasi" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <h1>Dropzone</h1>
+                <div className="mx-auto max-w-screen-xl">
+                    <DropzoneUpload />
+                </div>
             </div>
         </AppLayout>
     );
