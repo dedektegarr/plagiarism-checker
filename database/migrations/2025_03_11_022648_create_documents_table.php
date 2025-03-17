@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('group_documents', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->uuid("id")->primary();
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('group_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('document_id')->constrained()->onDelete('cascade');
+            $table->string('filename');
+            $table->string('path');
+            $table->timestamp("uploaded_at");
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('group_documents');
+        Schema::dropIfExists('documents');
     }
 };
