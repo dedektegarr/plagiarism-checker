@@ -1,7 +1,9 @@
-import UploadDocument from '@/components/upload-document';
+import UploadDocument, { FileWithPreview } from '@/components/upload-document';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,12 +13,35 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function PlagiarismCheck() {
+    const [uploading, setUploading] = useState<boolean>(false);
+
     const acceptedFiles = {
         'application/pdf': ['.pdf'],
     };
 
-    const handleOnUpload = () => {
-        console.log('Uploading...');
+    const handleOnUpload = (files: FileWithPreview[]) => {
+        router.post(
+            route('documents.upload'),
+            { documents: files },
+            {
+                forceFormData: true,
+                onProgress: (data) => {
+                    setUploading(true);
+                    toast.loading('Mengunggah...', { id: 'upload-progress' });
+                },
+                onSuccess: () => {
+                    toast.dismiss('upload-progress');
+                    toast.success('Berhasil Mengunggah Dokumen');
+                },
+                onError: () => {
+                    toast.dismiss('upload-progress');
+                    toast.error('Gagal Mengunggah File', {
+                        description: 'Hanya file dengan format PDF yang diperbolehkan',
+                    });
+                },
+                onFinish: () => setUploading(false),
+            },
+        );
     };
 
     return (
@@ -24,7 +49,7 @@ export default function PlagiarismCheck() {
             <Head title="Periksa Plagiasi" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                {/* <DropzoneUpload /> */} <UploadDocument acceptedFiles={acceptedFiles} onUpload={handleOnUpload} />
+                <UploadDocument acceptedFiles={acceptedFiles} isUploading={uploading} onUpload={handleOnUpload} />
             </div>
         </AppLayout>
     );

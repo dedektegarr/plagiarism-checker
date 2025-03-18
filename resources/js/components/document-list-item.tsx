@@ -35,7 +35,9 @@ export default function ({ file, onDelete }: DocumentListItemProps) {
                     </svg>
                 </div>
                 <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200">{file.name}</p>
+                    <a href={URL.createObjectURL(file)} target="_blank" className="inline-block text-sm font-medium text-gray-900 dark:text-gray-200">
+                        {file.name}
+                    </a>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
                 </div>
             </div>
@@ -43,7 +45,7 @@ export default function ({ file, onDelete }: DocumentListItemProps) {
                 onClick={() => onDelete(file.name)}
                 className="cursor-pointer text-red-800 transition-colors hover:text-red-900 dark:text-red-700 dark:hover:text-red-800"
             >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
             </button>
         </div>
     );

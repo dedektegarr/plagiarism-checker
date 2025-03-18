@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('comparisons', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->foreignUuid("user_id")->constrained()->onDelete('cascade');
-            $table->foreignUuid('group_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('group_id')->nullable()->constrained()->nullOnDelete();
             $table->integer("upload_duration");
             $table->integer("comparison_duration");
             $table->enum('status', ['pending', 'processing', 'done']);

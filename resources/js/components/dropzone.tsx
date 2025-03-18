@@ -12,7 +12,7 @@ export default function Dropzone(props: DropzoneOptions) {
                 'dark:border-gray-600 dark:hover:border-gray-400',
                 isDragActive
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-300 bg-gray-50 hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-400',
+                    : 'bg-primary-foreground border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-400',
             )}
         >
             <input {...getInputProps()} />
