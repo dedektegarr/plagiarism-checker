@@ -2,34 +2,32 @@
 
 namespace App\Services;
 
+use Smalot\PdfParser\Document;
 use Smalot\PdfParser\Parser;
 
 class PDFService
 {
-    protected $parser;
+    protected Parser $parser;
+    protected ?Document $pdf = null;
 
-    public function __construct()
+    public function __construct(string $path)
     {
         $this->parser = new Parser();
+        $this->pdf = $this->parser->parseFile($path);
     }
 
-    public function parseMetadata(string $path)
+    public function parseMetadata(): array
     {
-        $pdf = $this->parser->parseFile($path);
-        return $pdf->getDetails();
+        return $this->pdf->getDetails();
     }
 
-    public function getText(string $path)
+    public function getText(): string
     {
-        $pdf = $this->parser->parseFile($path);
-        return $this->removeRandomCharacters($pdf->getText());
+        return $this->cleanText($this->pdf->getText());
     }
 
-    private function removeRandomCharacters($text)
+    private function cleanText(string $text): string
     {
-        $text = preg_replace('/[^A-Za-z0-9\.\-\s]/', '', $text);
-        $text = preg_replace('/\s+/', ' ', $text);
-
-        return $text;
+        return preg_replace('/[^\w\s\.\-]/u', '', preg_replace('/\s+/', ' ', $text));
     }
 }
