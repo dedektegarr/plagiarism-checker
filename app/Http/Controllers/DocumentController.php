@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\Document;
 use Illuminate\Support\Str;
-use App\Services\PDFService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function upload(Request $request, PDFService $pdfService)
+    public function upload(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             "documents" => "required|array",
             "documents.*" => "required|file|mimes:pdf"
         ], [
@@ -25,31 +22,24 @@ class DocumentController extends Controller
             "documents.*.mimes" => "Dokumen :position harus berupa file PDF.",
         ]);
 
-        if ($request->hasFile('documents')) {
-            foreach ($request->file('documents') as $file) {
-                $path = $file->store('documents');
-                $absolutePath = Storage::path($path);
+        $userId = Auth::id();
+        $documents = [];
 
-                $pdfText = $pdfService->getText($absolutePath);
-                $pdfMetadata = $pdfService->parseMetadata($absolutePath);
-
-                $document = Document::create([
-                    "user_id" => Auth::user()->id,
-                    "filename" => $file->getClientOriginalName(),
-                    "size" => $file->getSize(),
-                    "path" => $path,
-                    "uploaded_at" => Carbon::now()
-                ]);
-
-                $document->metadata()->create([
-                    "title" => $pdfMetadata["dc:title"] ?? null,
-                    "author" => $pdfMetadata["Creator"] ?? null,
-                    "pages" => $pdfMetadata["Pages"] ?? null,
-                    "preprocessed_text" => $pdfText ?? null
-                ]);
-            }
+        foreach ($validated['documents'] as $file) {
+            $documents[] = [
+                "id" => Str::uuid(),
+                "user_id" => $userId,
+                "filename" => $file->getClientOriginalName(),
+                "size" => $file->getSize(),
+                "path" => $file->store('documents'),
+                "uploaded_at" => now(),
+                "updated_at" => now(),
+                "created_at" => now(),
+            ];
         }
 
-        return to_route("plagiarism.index");
+        Document::insert($documents);
+
+        return to_route("plagiarism.index")->with("success", "Dokumen berhasil diunggah.");
     }
 }
