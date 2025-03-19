@@ -40,6 +40,6 @@ class DocumentController extends Controller
 
         Document::insert($documents);
 
-        return to_route("plagiarism.index")->with("success", "Dokumen berhasil diunggah.");
+        return to_route("plagiarism.index");
     }
 }

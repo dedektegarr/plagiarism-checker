@@ -29,17 +29,26 @@ export default function PlagiarismCheck() {
                     setUploading(true);
                     toast.loading('Mengunggah...', { id: 'upload-progress' });
                 },
-                onSuccess: () => {
-                    toast.dismiss('upload-progress');
+                onSuccess: (data) => {
                     toast.success('Berhasil Mengunggah Dokumen');
                 },
-                onError: () => {
-                    toast.dismiss('upload-progress');
+                onError: (errors) => {
+                    const errorMessages = (
+                        <ul className="list-inside list-disc">
+                            {Object.values(errors).map((msg, index) => (
+                                <li key={index}>{msg}</li>
+                            ))}
+                        </ul>
+                    );
+
                     toast.error('Gagal Mengunggah File', {
-                        description: 'Hanya file dengan format PDF yang diperbolehkan',
+                        description: errorMessages,
                     });
                 },
-                onFinish: () => setUploading(false),
+                onFinish: () => {
+                    toast.dismiss('upload-progress');
+                    setUploading(false);
+                },
             },
         );
     };
