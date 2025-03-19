@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Document;
+use Illuminate\Support\Str;
+use App\Services\PDFService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function upload(Request $request)
+    public function upload(Request $request, PDFService $pdfService)
     {
         $request->validate([
             "documents" => "required|array",
@@ -21,7 +27,26 @@ class DocumentController extends Controller
 
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {
-                $file->store('documents');
+                $path = $file->store('documents');
+                $absolutePath = Storage::path($path);
+
+                $pdfText = $pdfService->getText($absolutePath);
+                $pdfMetadata = $pdfService->parseMetadata($absolutePath);
+
+                $document = Document::create([
+                    "user_id" => Auth::user()->id,
+                    "filename" => $file->getClientOriginalName(),
+                    "size" => $file->getSize(),
+                    "path" => $path,
+                    "uploaded_at" => Carbon::now()
+                ]);
+
+                $document->metadata()->create([
+                    "title" => $pdfMetadata["dc:title"] ?? null,
+                    "author" => $pdfMetadata["Creator"] ?? null,
+                    "pages" => $pdfMetadata["Pages"] ?? null,
+                    "preprocessed_text" => $pdfText ?? null
+                ]);
             }
         }
 

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('group_id')->nullable()->constrained()->nullOnDelete();
             $table->string('filename');
+            $table->integer('size');
             $table->string('path');
             $table->timestamp("uploaded_at");
             $table->timestamps();

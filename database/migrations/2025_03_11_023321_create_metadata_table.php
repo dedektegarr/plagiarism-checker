@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('metadata', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->foreignUUID('document_id')->constrained()->onDelete('cascade');
-            $table->string('title');
-            $table->string("author");
-            $table->integer('pages');
-            $table->integer('size');
-            $table->text("preprocessed_text");
+            $table->string('title')->nullable();
+            $table->string("author")->nullable();
+            $table->integer('pages')->nullable();
+            $table->text("preprocessed_text")->nullable();
             $table->timestamps();
         });
     }
