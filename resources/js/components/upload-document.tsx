@@ -42,11 +42,11 @@ export default function UploadDocument({ acceptedFiles, isUploading, onUpload, l
 
     return (
         <div className="w-full">
-            <div className="hidden items-start md:grid md:grid-cols-12 md:gap-6">
-                <div className="flex flex-col md:col-span-4">
-                    <h2 className="mb-4 text-xl font-semibold dark:text-gray-100">Ringkasan</h2>
+            <div className="grid grid-cols-12 items-start gap-4">
+                <div className="col-span-12 flex flex-col lg:col-span-4">
+                    <h2 className="mb-4 text-lg font-semibold dark:text-gray-100">Ringkasan</h2>
 
-                    <div className="mb-4 flex flex-col space-y-4">
+                    <div className="mb-4 flex flex-col space-y-4 text-sm">
                         <div className="bg-primary-foreground flex items-center justify-between rounded-lg p-4">
                             <span className="text-gray-700 dark:text-gray-300">Total Dokumen</span>
                             <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300"> {files.length}</Badge>
@@ -74,12 +74,12 @@ export default function UploadDocument({ acceptedFiles, isUploading, onUpload, l
                     )}
                 </div>
 
-                <div className="flex flex-col md:col-span-8">
-                    <h2 className="mb-4 text-xl font-semibold dark:text-gray-100">Daftar Dokumen</h2>
+                <div className="col-span-12 flex flex-col lg:col-span-8">
+                    <h2 className="mb-4 text-lg font-semibold dark:text-gray-100">Daftar Dokumen</h2>
 
                     {files.length === 0 ? (
                         <div className="bg-primary-foreground flex h-full flex-col items-center justify-center rounded-lg p-8">
-                            <p className="text-center text-gray-500 dark:text-gray-400">Belum ada dokumen yang diunggah</p>
+                            <p className="text-center text-sm text-gray-500 dark:text-gray-400">Belum ada dokumen yang diunggah</p>
                         </div>
                     ) : (
                         <DocumentList files={files} onDelete={handleOnDeleteFile} />

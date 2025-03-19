@@ -17,10 +17,10 @@ export default function Dropzone(props: DropzoneOptions) {
         >
             <input {...getInputProps()} />
             <div className="flex flex-col items-center justify-center">
-                <div className="rounded-full bg-gray-100 p-2 dark:bg-gray-700">
+                <div className="rounded-full bg-gray-100 p-2 transition-colors dark:bg-gray-600 group-hover:dark:bg-gray-400">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-gray-400 dark:text-gray-500"
+                        className="h-6 w-6 text-gray-400 transition-colors group-hover:dark:text-gray-500"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
