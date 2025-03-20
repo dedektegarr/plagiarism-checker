@@ -10,17 +10,17 @@ import AppLogo from './app-logo';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        url: '/dashboard',
+        url: route('dashboard'),
         icon: LayoutGrid,
     },
     {
         title: 'Periksa Plagiasi',
-        url: '/periksa-plagiasi',
+        url: route('plagiarism.index'),
         icon: FileText,
     },
     {
         title: 'Grup Dokumen',
-        url: '/grup-dokumen',
+        url: route('group.index'),
         icon: Folder,
     },
 ];
