@@ -10,4 +10,9 @@ class Metadata extends Model
     use HasUuids;
 
     protected $guarded = ["id"];
+
+    public function document()
+    {
+        return $this->belongsTo(Document::class, "document_id");
+    }
 }

@@ -15,4 +15,14 @@ class Document extends Model
     {
         return $this->hasOne(Metadata::class, "document_id");
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "document_id");
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class, "group_id");
+    }
 }

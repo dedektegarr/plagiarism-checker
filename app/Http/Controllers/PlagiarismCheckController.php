@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Models\Document;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,13 +32,16 @@ class PlagiarismCheckController extends Controller
             "documents.*.mimes" => "Dokumen :position harus berupa file PDF.",
         ]);
 
-        $userId = Auth::id();
-        $documents = [];
+        $user = Auth::user();
 
+        // Creating group for current user
+        $group = $user->groups()->create(["name" => "Group 1"]);
+
+        // Insert documents to group
+        $documents = [];
         foreach ($validated['documents'] as $file) {
             $documents[] = [
                 "id" => Str::uuid(),
-                "user_id" => $userId,
                 "filename" => $file->getClientOriginalName(),
                 "size" => $file->getSize(),
                 "path" => $file->store('documents'),
@@ -49,7 +51,7 @@ class PlagiarismCheckController extends Controller
             ];
         }
 
-        Document::insert($documents);
+        $group->documents()->createMany($documents);
 
         // return to_route("plagiarism.index");
     }

@@ -10,4 +10,14 @@ class Group extends Model
     use HasUuids;
 
     protected $guarded = ["id"];
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, "group_id");
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id");
+    }
 }
