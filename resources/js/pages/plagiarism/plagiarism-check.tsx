@@ -6,7 +6,7 @@ import { Head, Link } from '@inertiajs/react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Periksa Plagiasi',
-        href: '/periksa-plagiasi',
+        href: route('plagiarism.index'),
     },
 ];
 

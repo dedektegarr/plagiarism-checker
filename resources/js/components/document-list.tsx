@@ -1,7 +1,7 @@
 import DocumentListItem from './document-list-item';
 import { FileWithPreview } from './upload-document';
 
-interface DocumentListProps {
+export interface DocumentListProps {
     files: FileWithPreview[];
     onDelete: (filename: string) => void;
 }

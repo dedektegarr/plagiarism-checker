@@ -25,7 +25,7 @@ export default function PlagiarismCheckCreate() {
 
     const handleOnUpload = (files: FileWithPreview[]) => {
         router.post(
-            route('documents.upload'),
+            route('plagiarism.upload'),
             { documents: files },
             {
                 forceFormData: true,
@@ -35,8 +35,6 @@ export default function PlagiarismCheckCreate() {
                 },
                 onSuccess: (data) => {
                     toast.success('Berhasil Mengunggah Dokumen');
-
-                    router.visit(route('plagiarism.index'));
                 },
                 onError: (errors) => {
                     const errorMessages = (

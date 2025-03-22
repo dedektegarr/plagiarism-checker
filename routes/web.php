@@ -17,7 +17,8 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix("check")->group(function () {
         Route::get("/", [PlagiarismCheckController::class, "index"])->name("plagiarism.index");
         Route::get("/upload", [PlagiarismCheckController::class, "create"])->name("plagiarism.create");
-        Route::post("/upload", [PlagiarismCheckController::class, "upload"])->name("documents.upload");
+        Route::post("/upload", [PlagiarismCheckController::class, "upload"])->name("plagiarism.upload");
+        Route::get("/{group}", [PlagiarismCheckController::class, "show"])->name("plagiarism.show");
     });
 
     Route::get("/grup-dokumen", [GroupController::class, "index"])->name("group.index");

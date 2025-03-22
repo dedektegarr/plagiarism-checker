@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class PlagiarismCheckController extends Controller
         $user = Auth::user();
 
         // Creating group for current user
-        $group = $user->groups()->create(["name" => "Group 1"]);
+        $group = $user->groups()->create(["name" => "grup_" . uniqid()]);
 
         // Insert documents to group
         $documents = [];
@@ -53,6 +54,15 @@ class PlagiarismCheckController extends Controller
 
         $group->documents()->createMany($documents);
 
-        // return to_route("plagiarism.index");
+        return to_route("plagiarism.show", $group->id);
+    }
+
+    public function show(Group $group)
+    {
+        $group->load("documents");
+
+        return Inertia::render("plagiarism/plagiarism-check-show", [
+            "group" => $group
+        ]);
     }
 }
