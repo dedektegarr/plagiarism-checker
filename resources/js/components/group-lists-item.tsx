@@ -1,7 +1,19 @@
 import { Group } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { CalendarIcon, ClockIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, LoaderCircle } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from './ui/alert-dialog';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
@@ -12,6 +24,24 @@ interface GroupListsItemProps {
 }
 
 export default function GroupListsItem({ group }: GroupListsItemProps) {
+    const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const handleOnDelete = (id: string) => {
+        router.delete(route('group.destroy', id), {
+            onStart: () => {
+                setIsLoading(true);
+            },
+            onSuccess: () => {
+                toast.success('Grup berhasil dihapus');
+                setIsAlertOpen(false);
+            },
+            onFinish: () => {
+                setIsLoading(false);
+            },
+        });
+    };
+
     return (
         <Card className="bg-primary-foreground p-0 transition-all duration-200 hover:shadow-md">
             <CardContent className="p-5">
@@ -66,8 +96,35 @@ export default function GroupListsItem({ group }: GroupListsItemProps) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-background">
-                            <DropdownMenuItem className="focus:bg-primary-foreground dark:text-gray-200">Edit Grup</DropdownMenuItem>
-                            <DropdownMenuItem className="focus:bg-primary-foreground text-red-600 dark:text-red-400">Hapus Grup</DropdownMenuItem>
+                            <DropdownMenuItem className="focus:bg-primary-foreground text-xs dark:text-gray-200">Edit Grup</DropdownMenuItem>
+                            <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem
+                                        onSelect={(e) => {
+                                            e.preventDefault();
+                                            setIsAlertOpen(true);
+                                        }}
+                                        className="focus:bg-primary-foreground cursor-pointer text-xs text-red-600 dark:text-red-400"
+                                    >
+                                        Hapus Grup
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Apakah kamu yakin ingin menghapus grup ini?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Tindakan ini tidak dapat dibatalkan. Grup ini akan dihapus secara permanen.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                                        <Button type="button" onClick={() => handleOnDelete(group.id)} disabled={isLoading}>
+                                            {isLoading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                            Hapus
+                                        </Button>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

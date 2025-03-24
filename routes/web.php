@@ -21,7 +21,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get("/{group}", [PlagiarismCheckController::class, "show"])->name("plagiarism.show");
     });
 
-    Route::get("/grup-dokumen", [GroupController::class, "index"])->name("group.index");
+    Route::prefix("group")->group(function () {
+        Route::get("/", [GroupController::class, "index"])->name("group.index");
+        Route::delete("/{group}/delete", [GroupController::class, "destroy"])->name("group.destroy");
+    });
 });
 
 require __DIR__ . '/settings.php';

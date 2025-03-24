@@ -6,14 +6,12 @@ import { FolderIcon, Plus, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import GroupListsItem from './group-lists-item';
 
-// Group type definition
-
 type GroupListsProps = {
     groups: Group[];
 };
 
 export function GroupLists({ groups }: GroupListsProps) {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     const filteredGroups = groups.filter((group) => group.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
@@ -32,7 +30,7 @@ export function GroupLists({ groups }: GroupListsProps) {
                 </div>
             </div>
 
-            {filteredGroups.length === 0 ? (
+            {filteredGroups.length === 0 && searchQuery ? (
                 <Card className="bg-primary-foreground">
                     <CardContent className="flex flex-col items-center justify-center py-10">
                         <FolderIcon className="mb-4 h-16 w-16 text-gray-300 dark:text-gray-600" />
@@ -42,7 +40,7 @@ export function GroupLists({ groups }: GroupListsProps) {
                 </Card>
             ) : (
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    <Card className="hover:bg-primary-foreground/30 flex items-center justify-center border-2 border-dashed bg-transparent p-0 transition-all duration-200 hover:shadow-md">
+                    <Card className="hover:bg-primary-foreground/30 flex min-h-40 items-center justify-center border-2 border-dashed bg-transparent p-0 transition-all duration-200 hover:shadow-md">
                         <CardContent className="h-full w-full p-0">
                             <Link className="flex h-full w-full items-center justify-center" href={route('plagiarism.upload')}>
                                 <Plus className="h-8 w-8" />
