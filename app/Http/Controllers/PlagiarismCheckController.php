@@ -12,7 +12,17 @@ class PlagiarismCheckController extends Controller
 {
     public function index()
     {
-        return Inertia::render("plagiarism/plagiarism-check");
+        $groups = Group::where("user_id", Auth::id())->latest()->get();
+
+        $groups = $groups->map(function ($group) {
+            return array_merge($group->toArray(), [
+                "number_of_documents" => $group->documents->count()
+            ]);
+        });
+
+        return Inertia::render("plagiarism/plagiarism-check", [
+            "groups" => $groups
+        ]);
     }
 
     public function create()

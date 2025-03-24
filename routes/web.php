@@ -14,7 +14,7 @@ Route::middleware(['auth'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::prefix("check")->group(function () {
+    Route::prefix("plagiarism")->group(function () {
         Route::get("/", [PlagiarismCheckController::class, "index"])->name("plagiarism.index");
         Route::get("/upload", [PlagiarismCheckController::class, "create"])->name("plagiarism.create");
         Route::post("/upload", [PlagiarismCheckController::class, "upload"])->name("plagiarism.upload");

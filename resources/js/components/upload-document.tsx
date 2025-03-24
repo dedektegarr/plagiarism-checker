@@ -44,7 +44,7 @@ export default function UploadDocument({ acceptedFiles, isUploading, onUpload, l
         <div className="w-full">
             <div className="grid grid-cols-12 items-start gap-4">
                 <div className="col-span-12 flex flex-col lg:col-span-4">
-                    <h2 className="mb-4 text-lg font-semibold dark:text-gray-100">Ringkasan</h2>
+                    <h2 className="text-primary mb-4 text-lg font-semibold">Ringkasan</h2>
 
                     <div className="mb-4 flex flex-col space-y-4 text-sm">
                         <div className="bg-primary-foreground flex items-center justify-between rounded-lg p-4">
@@ -75,7 +75,7 @@ export default function UploadDocument({ acceptedFiles, isUploading, onUpload, l
                 </div>
 
                 <div className="col-span-12 flex flex-col lg:col-span-8">
-                    <h2 className="mb-4 text-lg font-semibold dark:text-gray-100">Daftar Dokumen</h2>
+                    <h2 className="text-primary mb-4 text-lg font-semibold">Daftar Dokumen</h2>
 
                     {files.length === 0 ? (
                         <div className="bg-primary-foreground flex h-full flex-col items-center justify-center rounded-lg p-8">

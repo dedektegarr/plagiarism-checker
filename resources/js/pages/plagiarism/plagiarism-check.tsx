@@ -1,7 +1,11 @@
-import { Button } from '@/components/ui/button';
+import { GroupLists } from '@/components/group-lists';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Group, type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
+
+interface PlagiarismCheckProps {
+    groups: Group[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,15 +14,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function PlagiarismCheck() {
+export default function PlagiarismCheck({ groups }: PlagiarismCheckProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Periksa Plagiasi" />
 
             <div className="h-full rounded-xl p-4">
-                <Button asChild size="lg">
-                    <Link href={route('plagiarism.create')}>Unggah Dokumen</Link>
-                </Button>
+                <GroupLists groups={groups} />
             </div>
         </AppLayout>
     );
