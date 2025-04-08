@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPreprocessing;
 use App\Models\Group;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -63,6 +64,9 @@ class PlagiarismCheckController extends Controller
         }
 
         $group->documents()->createMany($documents);
+
+        // Create job for preprocessing with batch
+        ProcessPreprocessing::dispatch($documents);
 
         return to_route("plagiarism.show", $group->id);
     }
