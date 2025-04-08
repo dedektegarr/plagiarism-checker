@@ -65,8 +65,14 @@ class PlagiarismCheckController extends Controller
 
         $group->documents()->createMany($documents);
 
-        // Create job for preprocessing with batch
-        ProcessPreprocessing::dispatch($documents);
+        // Get stored documents
+        $insertedDocuments = $group->documents()
+            ->whereIn('filename', collect($documents)->pluck('filename'))
+            ->get(['id', 'path'])
+            ->toArray();
+
+        // Send to job
+        ProcessPreprocessing::dispatch($insertedDocuments);
 
         return to_route("plagiarism.show", $group->id);
     }
