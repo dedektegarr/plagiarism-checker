@@ -2,7 +2,7 @@ import { Group } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, ClockIcon, LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import {
     AlertDialog,
@@ -17,29 +17,63 @@ import {
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 interface GroupListsItemProps {
     group: Group;
 }
 
 export default function GroupListsItem({ group }: GroupListsItemProps) {
-    const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [deleteAlert, setDeleteAlert] = useState<boolean>(false);
+    const [editAlert, setEditAlert] = useState<boolean>(false);
+    const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
+    const [loadingEdit, setLoadingEdit] = useState<boolean>(false);
+
+    const nameInput = useRef<HTMLInputElement>(null);
 
     const handleOnDelete = (id: string) => {
         router.delete(route('group.destroy', id), {
             onStart: () => {
-                setIsLoading(true);
+                setLoadingDelete(true);
             },
             onSuccess: () => {
                 toast.success('Grup berhasil dihapus');
-                setIsAlertOpen(false);
             },
             onFinish: () => {
-                setIsLoading(false);
+                setLoadingDelete(false);
+                setDeleteAlert(false);
             },
         });
+    };
+
+    const handleOnEdit = (id: string) => {
+        router.put(
+            route('group.update', id),
+            {
+                name: nameInput.current?.value,
+            },
+            {
+                onStart: () => {
+                    setLoadingEdit(true);
+                },
+                onSuccess: () => {
+                    toast.success('Grup berhasil diperbarui');
+                    setEditAlert(false);
+                },
+                onError: (error) => {
+                    nameInput.current?.focus();
+                    toast.error('Gagal memperbarui grup', {
+                        description: error.name,
+                    });
+                },
+                onFinish: () => {
+                    setLoadingEdit(false);
+                },
+            },
+        );
     };
 
     return (
@@ -96,13 +130,57 @@ export default function GroupListsItem({ group }: GroupListsItemProps) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-background">
-                            <DropdownMenuItem className="focus:bg-primary-foreground text-xs dark:text-gray-200">Edit Grup</DropdownMenuItem>
-                            <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                            <Dialog open={editAlert} onOpenChange={setEditAlert}>
+                                <DialogTrigger asChild>
+                                    <DropdownMenuItem
+                                        onSelect={(e) => {
+                                            e.preventDefault();
+                                            setEditAlert(true);
+                                        }}
+                                        className="focus:bg-primary-foreground cursor-pointer text-xs dark:text-gray-200"
+                                    >
+                                        Edit Grup
+                                    </DropdownMenuItem>
+                                </DialogTrigger>
+                                <DialogContent aria-describedby={undefined} className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Edit Grup</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="name" className="text-right">
+                                                Nama Grup
+                                            </Label>
+                                            <Input
+                                                ref={nameInput}
+                                                id="name"
+                                                defaultValue={group.name}
+                                                className="col-span-3"
+                                                autoComplete="off"
+                                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        handleOnEdit(group.id);
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button onClick={() => handleOnEdit(group.id)} type="button" disabled={loadingEdit}>
+                                            {loadingEdit && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                            Simpan
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+
+                            <AlertDialog open={deleteAlert} onOpenChange={setDeleteAlert}>
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem
                                         onSelect={(e) => {
                                             e.preventDefault();
-                                            setIsAlertOpen(true);
+                                            setDeleteAlert(true);
                                         }}
                                         className="focus:bg-primary-foreground cursor-pointer text-xs text-red-600 dark:text-red-400"
                                     >
@@ -118,8 +196,8 @@ export default function GroupListsItem({ group }: GroupListsItemProps) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Batal</AlertDialogCancel>
-                                        <Button type="button" onClick={() => handleOnDelete(group.id)} disabled={isLoading}>
-                                            {isLoading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                        <Button type="button" onClick={() => handleOnDelete(group.id)} disabled={loadingDelete}>
+                                            {loadingDelete && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                             Hapus
                                         </Button>
                                     </AlertDialogFooter>

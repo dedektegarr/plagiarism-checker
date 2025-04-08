@@ -14,6 +14,15 @@ class GroupController extends Controller
         return Inertia::render("group/document-group");
     }
 
+    public function update(Request $request, Group $group)
+    {
+        $request->validate([
+            "name" => "required|string|max:255",
+        ]);
+
+        $group->update($request->only("name"));
+    }
+
     public function destroy(Group $group)
     {
         $documents = $group->documents;

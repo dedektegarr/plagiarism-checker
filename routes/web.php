@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix("group")->group(function () {
         Route::get("/", [GroupController::class, "index"])->name("group.index");
         Route::delete("/{group}/delete", [GroupController::class, "destroy"])->name("group.destroy");
+        Route::put("/{group}/update", [GroupController::class, "update"])->name("group.update");
     });
 });
 
