@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessPreprocessing;
 use App\Models\Group;
+use App\Services\PreprocessingService;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PlagiarismCheckController extends Controller
 {
@@ -71,8 +75,9 @@ class PlagiarismCheckController extends Controller
             ->get(['id', 'path'])
             ->toArray();
 
-        // Send to job
-        ProcessPreprocessing::dispatch($insertedDocuments);
+        // Run preprocessing
+        $preprocessingService = new PreprocessingService();
+        $preprocessingService->dispatchBatch($insertedDocuments);
 
         return to_route("plagiarism.show", $group->id);
     }

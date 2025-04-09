@@ -9,10 +9,16 @@ class PDFService
 {
     protected Parser $parser;
     protected ?Document $pdf = null;
+    protected $path;
 
-    public function __construct(string $path)
+    public function __construct()
     {
         $this->parser = new Parser();
+    }
+
+    public function setPath(string $path): void
+    {
+        $this->path = $path;
         $this->pdf = $this->parser->parseFile($path);
     }
 
