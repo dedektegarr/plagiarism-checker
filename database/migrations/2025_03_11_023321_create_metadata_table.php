@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('metadata', function (Blueprint $table) {
             $table->uuid("id")->primary();
-            $table->foreignUUID('document_id')->constrained()->onDelete('cascade');
+            $table->foreignUUID('document_id')->unique()->constrained()->onDelete('cascade');
             $table->string('title')->nullable();
             $table->string("author")->nullable();
             $table->integer('pages')->nullable();
