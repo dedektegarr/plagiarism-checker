@@ -1,3 +1,4 @@
+import { formatFileSize } from '@/helpers/helpers';
 import { X } from 'lucide-react';
 import { FileWithPreview } from './upload-document';
 
@@ -7,14 +8,6 @@ interface DocumentListItemProps {
 }
 
 export default function ({ file, onDelete }: DocumentListItemProps) {
-    function formatFileSize(bytes: number) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
     return (
         <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-4">

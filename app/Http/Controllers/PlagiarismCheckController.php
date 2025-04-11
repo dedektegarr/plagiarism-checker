@@ -86,6 +86,12 @@ class PlagiarismCheckController extends Controller
     {
         $group->load("documents");
 
+        $group->documents->map(function ($document) {
+            return array_merge($document->toArray(), [
+                "metadata" => $document->metadata,
+            ]);
+        });
+
         return Inertia::render("plagiarism/plagiarism-check-show", [
             "group" => $group
         ]);

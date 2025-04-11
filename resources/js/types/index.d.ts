@@ -49,3 +49,21 @@ export interface Group {
     created_at: string;
     updated_at: string;
 }
+
+export interface Metadata {
+    id: string;
+    document_id: string;
+    title?: string;
+    author?: string;
+    pages?: number;
+    preprocessed_text: string;
+}
+
+export interface Document {
+    id: string;
+    filename: string;
+    path: string;
+    group_id: string;
+    size: number;
+    metadata: Metadata;
+}
