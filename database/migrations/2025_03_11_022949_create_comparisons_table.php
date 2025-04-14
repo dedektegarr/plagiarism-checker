@@ -15,9 +15,9 @@ return new class extends Migration
             $table->uuid("id")->primary();
             $table->foreignUuid("user_id")->constrained()->onDelete('cascade');
             $table->foreignUuid('group_id')->nullable()->constrained()->nullOnDelete();
-            $table->integer("upload_duration");
-            $table->integer("comparison_duration");
-            $table->enum('status', ['pending', 'processing', 'done']);
+            $table->integer("processing_time")->default(0);
+            $table->integer("comparison_time")->default(0);
+            // $table->enum('status', ['pending', 'processing', 'checked'])->default("pending");
             $table->timestamps();
         });
     }

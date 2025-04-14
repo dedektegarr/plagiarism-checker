@@ -69,6 +69,12 @@ class PlagiarismCheckController extends Controller
 
         $group->documents()->createMany($documents);
 
+        // Create comparison record
+        $comparison = $group->comparisons()->create([
+            "user_id" => $user->id,
+            "group_id" => $group->id,
+        ]);
+
         // Get stored documents
         $insertedDocuments = $group->documents()
             ->whereIn('filename', collect($documents)->pluck('filename'))
@@ -77,7 +83,7 @@ class PlagiarismCheckController extends Controller
 
         // Run preprocessing
         $preprocessingService = new PreprocessingService();
-        $preprocessingService->dispatchBatch($insertedDocuments);
+        $preprocessingService->dispatchBatch($insertedDocuments, $comparison->id);
 
         return to_route("plagiarism.show", $group->id);
     }

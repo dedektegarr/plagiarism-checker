@@ -10,4 +10,9 @@ class Comparison extends Model
     use HasUuids;
 
     protected $guarded = ["id"];
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class, "group_id");
+    }
 }

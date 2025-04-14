@@ -20,4 +20,9 @@ class Group extends Model
     {
         return $this->belongsTo(User::class, "user_id");
     }
+
+    public function comparisons()
+    {
+        return $this->hasMany(Comparison::class, "group_id");
+    }
 }
