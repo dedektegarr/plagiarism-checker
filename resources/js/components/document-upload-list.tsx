@@ -1,17 +1,17 @@
-import DocumentListItem from './document-list-item';
+import DocumentUploadListsItem from './document-upload-list-item';
 import { FileWithPreview } from './upload-document';
 
-export interface DocumentListProps {
+export interface DocumentUploadListsProps {
     files: FileWithPreview[];
     onDelete: (filename: string) => void;
 }
 
-export default function DocumentList({ files, onDelete }: DocumentListProps) {
+export default function DocumentUploadLists({ files, onDelete }: DocumentUploadListsProps) {
     return (
         <div className="flex-1 overflow-y-auto">
             <div className="divide-y rounded-lg border">
                 {files.map((file, index) => (
-                    <DocumentListItem key={index} file={file} onDelete={onDelete} />
+                    <DocumentUploadListsItem key={index} file={file} onDelete={onDelete} />
                 ))}
             </div>
         </div>

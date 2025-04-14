@@ -53,9 +53,9 @@ export interface Group {
 export interface Metadata {
     id: string;
     document_id: string;
-    title?: string;
-    author?: string;
-    pages?: number;
+    title?: string | null;
+    author?: string | null;
+    pages?: number | null;
     preprocessed_text: string;
 }
 
@@ -65,5 +65,13 @@ export interface Document {
     path: string;
     group_id: string;
     size: number;
-    metadata: Metadata;
+    metadata?: Metadata | null;
+}
+
+export interface Group {
+    id: string;
+    user_id: string;
+    name: string;
+    documents: Document[];
+    updated_at: string;
 }

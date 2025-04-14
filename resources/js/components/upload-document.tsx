@@ -2,7 +2,7 @@ import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useCallback, useState } from 'react';
 import { Accept, FileWithPath } from 'react-dropzone';
 import { toast } from 'sonner';
-import DocumentList from './document-list';
+import DocumentList from './document-upload-list';
 import Dropzone from './dropzone';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
