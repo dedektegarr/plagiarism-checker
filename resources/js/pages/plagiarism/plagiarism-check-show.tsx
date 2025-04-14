@@ -2,7 +2,7 @@ import DocumentLists from '@/components/document-lists';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Group } from '@/types';
-import { Head, usePoll } from '@inertiajs/react';
+import { Head, router, usePoll } from '@inertiajs/react';
 import { LoaderCircle, ScanSearch } from 'lucide-react';
 
 interface PlagiarismCheckShowProps {
@@ -25,13 +25,18 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
 
     const isPreprocessing = group.documents.every((document) => document.metadata === null);
 
+    const handleCalculateSimilarity = (id: string) => {
+        console.log(id);
+        router.post(route('plagiarism.calculate', id));
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={group.name} />
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-primary text-lg font-semibold">{group.name}</h2>
-                    <Button className="cursor-pointer gap-2" disabled={isPreprocessing}>
+                    <Button className="cursor-pointer gap-2" disabled={isPreprocessing} onClick={() => handleCalculateSimilarity(group.id)}>
                         {isPreprocessing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <ScanSearch className="h-4 w-4" />}
                         {isPreprocessing ? 'Memproses' : 'Periksa Plagiasi'}
                     </Button>

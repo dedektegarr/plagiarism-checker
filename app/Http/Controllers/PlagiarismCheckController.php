@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessPreprocessing;
 use App\Models\Group;
+use App\Services\CosimService;
 use App\Services\PreprocessingService;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -78,6 +79,21 @@ class PlagiarismCheckController extends Controller
         // Run preprocessing
         $preprocessingService = new PreprocessingService();
         $preprocessingService->dispatchBatch($insertedDocuments);
+
+        return to_route("plagiarism.show", $group->id);
+    }
+
+    public function calculate(Group $group, CosimService $cosimService)
+    {
+        $documents = $group->documents()->whereHas("metadata")->with("metadata")->get()->pluck("metadata.preprocessed_text");
+
+        $results = $cosimService->computeSimilarity($documents->values()->toArray())["similarity_matrix"];
+        dd($results);
+
+        foreach ($documents as $document) {
+            foreach ($results as $index => $result) {
+            }
+        }
 
         return to_route("plagiarism.show", $group->id);
     }
