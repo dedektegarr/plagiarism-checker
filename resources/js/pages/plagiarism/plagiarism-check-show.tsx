@@ -4,6 +4,8 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Group } from '@/types';
 import { Head, router, usePoll } from '@inertiajs/react';
 import { LoaderCircle, ScanSearch } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface PlagiarismCheckShowProps {
     group: Group;
@@ -11,6 +13,7 @@ interface PlagiarismCheckShowProps {
 
 export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps) {
     usePoll(3000);
+    const [isCalculating, setIsCalculating] = useState<boolean>(false);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -23,11 +26,29 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
         },
     ];
 
-    const isPreprocessing = group.documents.every((document) => document.metadata === null);
+    const isPreprocessing: boolean = group.documents.every((document) => document.metadata === null);
 
     const handleCalculateSimilarity = (id: string) => {
-        console.log(id);
-        router.post(route('plagiarism.calculate', id));
+        router.post(
+            route('plagiarism.calculate', id),
+            {},
+            {
+                onStart: () => {
+                    setIsCalculating(true);
+                    toast.loading('Menghitung plagiasi...', { id: 'calculate-progress' });
+                },
+                onSuccess: () => {
+                    toast.success('Berhasil menghitung plagiasi');
+                },
+                onError: (errors) => {
+                    console.log(errors);
+                },
+                onFinish: () => {
+                    toast.dismiss('calculate-progress');
+                    setIsCalculating(false);
+                },
+            },
+        );
     };
 
     return (
@@ -37,8 +58,8 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
                 <div className="flex items-center justify-between">
                     <h2 className="text-primary text-lg font-semibold">{group.name}</h2>
                     <Button className="cursor-pointer gap-2" disabled={isPreprocessing} onClick={() => handleCalculateSimilarity(group.id)}>
-                        {isPreprocessing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <ScanSearch className="h-4 w-4" />}
-                        {isPreprocessing ? 'Memproses' : 'Periksa Plagiasi'}
+                        {isPreprocessing || isCalculating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <ScanSearch className="h-4 w-4" />}
+                        {isPreprocessing || isCalculating ? 'Memproses...' : 'Periksa Plagiasi'}
                     </Button>
                 </div>
 

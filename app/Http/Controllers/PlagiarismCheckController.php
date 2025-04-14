@@ -88,7 +88,7 @@ class PlagiarismCheckController extends Controller
         $documents = $group->documents()->whereHas("metadata")->with("metadata")->get()->pluck("metadata.preprocessed_text");
 
         $results = $cosimService->computeSimilarity($documents->values()->toArray())["similarity_matrix"];
-        dd($results);
+        dd($group->comparisons);
 
         foreach ($documents as $document) {
             foreach ($results as $index => $result) {
