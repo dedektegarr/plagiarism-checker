@@ -10,7 +10,7 @@ interface PlagiarismCheckShowProps {
 }
 
 export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps) {
-    usePoll(2000);
+    usePoll(3000);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -31,7 +31,7 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-primary text-lg font-semibold">{group.name}</h2>
-                    <Button className="gap-2" disabled={isPreprocessing}>
+                    <Button className="cursor-pointer gap-2" disabled={isPreprocessing}>
                         {isPreprocessing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <ScanSearch className="h-4 w-4" />}
                         {isPreprocessing ? 'Memproses' : 'Periksa Plagiasi'}
                     </Button>
