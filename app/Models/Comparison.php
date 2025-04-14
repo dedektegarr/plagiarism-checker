@@ -15,4 +15,9 @@ class Comparison extends Model
     {
         return $this->belongsTo(Group::class, "group_id");
     }
+
+    public function comparisonResults()
+    {
+        return $this->hasMany(ComparisonResult::class, "comparison_id");
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ProcessPreprocessing;
+use App\Models\ComparisonResult;
 use App\Models\Group;
 use App\Services\CosimService;
 use App\Services\PreprocessingService;
@@ -91,15 +92,29 @@ class PlagiarismCheckController extends Controller
 
     public function calculate(Group $group, CosimService $cosimService)
     {
-        $documents = $group->documents()->whereHas("metadata")->with("metadata")->get()->pluck("metadata.preprocessed_text");
+        $comparison = $group->comparisons()->first();
+        $documents = $group->documents()->whereHas("metadata")->with("metadata")->get()->pluck("metadata.preprocessed_text", "id");
+        $documentIds = $documents->keys()->values();
 
         $results = $cosimService->computeSimilarity($documents->values()->toArray())["similarity_matrix"];
-        dd($group->comparisons);
 
-        foreach ($documents as $document) {
-            foreach ($results as $index => $result) {
+        $insertData = [];
+
+        foreach ($results as $i => $row) {
+            for ($j = $i + 1; $j < count($row); $j++) {
+                $insertData[] = [
+                    'id' => Str::uuid(),
+                    'comparison_id'    => $comparison->id,
+                    'document_1_id'    => $documentIds[$i],
+                    'document_2_id'    => $documentIds[$j],
+                    'similarity_score' => $row[$j],
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ];
             }
         }
+
+        ComparisonResult::insert($insertData);
 
         return to_route("plagiarism.show", $group->id);
     }

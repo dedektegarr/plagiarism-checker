@@ -10,4 +10,9 @@ class ComparisonResult extends Model
     use HasUuids;
 
     protected $guarded = ["id"];
+
+    public function comparison()
+    {
+        return $this->belongsTo(Comparison::class, "comparison_id");
+    }
 }
