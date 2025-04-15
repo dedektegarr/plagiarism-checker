@@ -92,6 +92,8 @@ class PlagiarismCheckController extends Controller
 
     public function calculate(Group $group, CosimService $cosimService)
     {
+        $start = now()->getPreciseTimestamp(3);
+
         $comparison = $group->comparisons()->first();
         $documents = $group->documents()->whereHas("metadata")->with("metadata")->get()->pluck("metadata.preprocessed_text", "id");
         $documentIds = $documents->keys()->values();
@@ -100,21 +102,32 @@ class PlagiarismCheckController extends Controller
 
         $insertData = [];
 
-        foreach ($results as $i => $row) {
-            for ($j = $i + 1; $j < count($row); $j++) {
+        foreach ($results as $i => $rows) {
+            // Remove self-comparison by current index
+            array_splice($rows, $i, 1);
+
+            foreach ($rows as $j => $value) {
                 $insertData[] = [
-                    'id' => Str::uuid(),
-                    'comparison_id'    => $comparison->id,
-                    'document_1_id'    => $documentIds[$i],
-                    'document_2_id'    => $documentIds[$j],
-                    'similarity_score' => $row[$j],
-                    'created_at'       => now(),
-                    'updated_at'       => now(),
+                    "id" => Str::uuid(),
+                    "comparison_id" => $comparison->id,
+                    "document_1_id" => $documentIds[$i],
+                    "document_2_id" => $documentIds[$j],
+                    "similarity_score" => $value,
+                    "created_at" => now(),
+                    "updated_at" => now(),
                 ];
             }
         }
 
-        ComparisonResult::insert($insertData);
+        ComparisonResult::insertOrIgnore($insertData);
+
+        $end = now()->getPreciseTimestamp(3);
+        $duration = $end - $start;
+
+        $comparison->update([
+            "status" => "completed",
+            "comparison_time" => $duration,
+        ]);
 
         return to_route("plagiarism.show", $group->id);
     }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignUuid('document_2_id')->references("id")->on("documents")->onDelete('cascade');
             $table->double('similarity_score');
             $table->timestamps();
+
+            $table->unique(['comparison_id', 'document_1_id', 'document_2_id'], 'comparison_document_unique');
         });
     }
 
