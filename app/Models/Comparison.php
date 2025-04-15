@@ -20,4 +20,9 @@ class Comparison extends Model
     {
         return $this->hasMany(ComparisonResult::class, "comparison_id");
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id");
+    }
 }

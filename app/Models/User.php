@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Group::class, "user_id");
     }
+
+    public function comparisons()
+    {
+        return $this->hasMany(Comparison::class, "user_id");
+    }
 }

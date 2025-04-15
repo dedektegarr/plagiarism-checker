@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('comparison_results', function (Blueprint $table) {
             $table->uuid("id")->primary();
-            $table->foreignUuid('comparison_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('document_1_id')->references("id")->on("documents")->onDelete('cascade');
-            $table->foreignUuid('document_2_id')->references("id")->on("documents")->onDelete('cascade');
+            $table->foreignUuid('comparison_id')->constrained()->onDelete("cascade");
+            $table->foreignUuid('document_1_id')->nullable()->references("id")->on("documents")->nullOnDelete();
+            $table->foreignUuid('document_2_id')->nullable()->references("id")->on("documents")->nullOnDelete();
             $table->double('similarity_score');
             $table->timestamps();
 
