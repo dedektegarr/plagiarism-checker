@@ -12,7 +12,7 @@ interface PlagiarismCheckShowProps {
 }
 
 export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps) {
-    usePoll(3000);
+    usePoll(5000);
     const [isCalculating, setIsCalculating] = useState<boolean>(false);
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -50,6 +50,8 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
             },
         );
     };
+
+    console.log(group.documents);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

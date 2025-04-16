@@ -25,4 +25,9 @@ class Document extends Model
     {
         return $this->belongsTo(Group::class, "group_id");
     }
+
+    public function comparisonResults()
+    {
+        return $this->hasMany(ComparisonResult::class, "document_1_id");
+    }
 }

@@ -134,11 +134,10 @@ class PlagiarismCheckController extends Controller
 
     public function show(Group $group)
     {
-        $group->load("documents");
-
-        $group->documents->map(function ($document) {
+        $group["documents"] = $group->documents->map(function ($document) {
             return array_merge($document->toArray(), [
                 "metadata" => $document->metadata,
+                "max_similarity" => $document->comparisonResults->max("similarity_score"),
             ]);
         });
 
