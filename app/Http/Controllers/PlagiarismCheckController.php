@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessPreprocessing;
 use App\Models\ComparisonResult;
+use App\Models\Document;
 use App\Models\Group;
 use App\Services\CosimService;
 use App\Services\PreprocessingService;
@@ -104,14 +105,20 @@ class PlagiarismCheckController extends Controller
 
         foreach ($results as $i => $rows) {
             // Remove self-comparison by current index
-            array_splice($rows, $i, 1);
+            $filteredRows = collect($rows)->filter(function ($value, $key) use ($i) {
+                return $key != $i;
+            })->values()->toArray();
 
-            foreach ($rows as $j => $value) {
+            foreach ($filteredRows as $j => $value) {
+                $filteredIds = $documentIds->filter(function ($value, $key) use ($i) {
+                    return $key != $i;
+                })->values()->toArray();
+
                 $insertData[] = [
                     "id" => Str::uuid(),
                     "comparison_id" => $comparison->id,
                     "document_1_id" => $documentIds[$i],
-                    "document_2_id" => $documentIds[$j],
+                    "document_2_id" => $filteredIds[$j],
                     "similarity_score" => $value,
                     "created_at" => now(),
                     "updated_at" => now(),
@@ -149,6 +156,16 @@ class PlagiarismCheckController extends Controller
 
         return Inertia::render("plagiarism/plagiarism-check-show", [
             "group" => $group
+        ]);
+    }
+
+    public function showDocument(Group $group, Document $document)
+    {
+        $document->load(["metadata", "comparisonResults", "comparisonResults.document2"]);
+
+        return Inertia::render("plagiarism/plagiarism-check-show-document", [
+            "document" => $document,
+            "group" => $group,
         ]);
     }
 }

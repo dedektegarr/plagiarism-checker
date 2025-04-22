@@ -57,6 +57,8 @@ export interface Metadata {
     author?: string | null;
     pages?: number | null;
     preprocessed_text: string;
+    updated_at: string;
+    created_at: string;
 }
 
 export interface Document {
@@ -67,6 +69,18 @@ export interface Document {
     size: number;
     max_similarity?: number | null;
     metadata?: Metadata | null;
+    comparison_results?: ComparisonResult[] | null;
+}
+
+export interface ComparisonResult {
+    id: string;
+    comparison_id: string;
+    document_1_id: string;
+    document_2_id: string;
+    document2: Document;
+    similarity_score: number;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Group {

@@ -28,6 +28,6 @@ class Document extends Model
 
     public function comparisonResults()
     {
-        return $this->hasMany(ComparisonResult::class, "document_1_id");
+        return $this->hasMany(ComparisonResult::class, "document_1_id")->orderBy("similarity_score", "desc");
     }
 }
