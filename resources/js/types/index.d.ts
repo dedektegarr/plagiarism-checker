@@ -65,6 +65,7 @@ export interface Document {
     path: string;
     group_id: string;
     size: number;
+    max_similarity?: number | null;
     metadata?: Metadata | null;
 }
 
@@ -72,6 +73,6 @@ export interface Group {
     id: string;
     user_id: string;
     name: string;
-    documents: Document[];
+    docs: Document[];
     updated_at: string;
 }

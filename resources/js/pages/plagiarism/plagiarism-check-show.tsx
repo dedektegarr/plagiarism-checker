@@ -26,7 +26,7 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
         },
     ];
 
-    const isPreprocessing: boolean = group.documents.every((document) => document.metadata === null);
+    const isPreprocessing: boolean = group.docs.every((document) => document.metadata === null);
 
     const handleCalculateSimilarity = (id: string) => {
         router.post(
@@ -51,8 +51,6 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
         );
     };
 
-    console.log(group.documents);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={group.name} />
@@ -67,8 +65,8 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
 
                 <DocumentLists
                     isPreprocessing={isPreprocessing}
-                    documents={group.documents}
-                    className={!group.documents.every((d) => d.metadata) ? 'pointer-events-none opacity-50' : ''}
+                    documents={group.docs}
+                    className={!group.docs.every((d) => d.metadata) ? 'pointer-events-none opacity-50' : ''}
                 />
             </div>
         </AppLayout>

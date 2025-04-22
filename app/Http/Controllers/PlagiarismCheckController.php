@@ -134,12 +134,18 @@ class PlagiarismCheckController extends Controller
 
     public function show(Group $group)
     {
-        $group["documents"] = $group->documents->map(function ($document) {
-            return array_merge($document->toArray(), [
-                "metadata" => $document->metadata,
-                "max_similarity" => $document->comparisonResults->max("similarity_score"),
-            ]);
-        });
+        $group->load(["documents", "documents.metadata", "documents.comparisonResults"]);
+
+        $group["docs"] = $group->documents
+            ->map(function ($document) {
+                return array_merge($document->toArray(), [
+                    "metadata" => $document->metadata,
+                    "max_similarity" => $document->comparisonResults->max("similarity_score"),
+                ]);
+            })
+            ->sortByDesc("max_similarity")
+            ->values()
+            ->all();
 
         return Inertia::render("plagiarism/plagiarism-check-show", [
             "group" => $group

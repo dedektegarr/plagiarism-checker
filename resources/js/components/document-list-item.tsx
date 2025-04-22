@@ -1,6 +1,8 @@
 import { formatFileSize } from '@/helpers/helpers';
 import { type Document } from '@/types';
+import { Badge } from './ui/badge';
 import { Card } from './ui/card';
+import { Progress } from './ui/progress';
 
 interface DocumentListItemProps {
     document: Document;
@@ -14,10 +16,12 @@ export default function DocumentListItem({ document }: DocumentListItemProps) {
             <div className="text-muted-foreground col-span-2 text-sm">{formatFileSize(document.size)}</div>
 
             <div className="col-span-1">
-                {document.plagiarismResult ? (
+                {document.max_similarity ? (
                     <div className="flex items-center gap-2">
-                        <Badge variant={document.plagiarismResult >= 30 ? 'destructive' : 'default'}>{document.plagiarismResult}%</Badge>
-                        <Progress value={document.plagiarismResult} className="h-2 w-16" />
+                        <Badge variant={document.max_similarity >= 30 ? 'destructive' : 'default'}>
+                            {Math.floor(document.max_similarity * 100)}%
+                        </Badge>
+                        <Progress value={document.max_similarity * 100} className="h-2 w-16" />
                     </div>
                 ) : (
                     <span className="text-muted-foreground text-sm">Belum diperiksa</span>
