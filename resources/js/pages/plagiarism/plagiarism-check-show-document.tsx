@@ -75,31 +75,31 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
                         </Card>
 
                         {/* Bagian Metadata */}
-                        <Card>
+                        <Card className="p-0">
                             <div className="p-6">
                                 <h3 className="mb-4 text-lg font-semibold">Document Metadata</h3>
                                 <dl className="space-y-3">
                                     <div className="flex justify-between">
-                                        <dt className="text-muted-foreground">File Size</dt>
-                                        <dd className="font-medium">{formatFileSize(document.size)}</dd>
+                                        <dt className="text-muted-foreground text-sm">File Size</dt>
+                                        <dd className="text-sm font-medium">{formatFileSize(document.size)}</dd>
                                     </div>
                                     <div className="flex justify-between">
-                                        <dt className="text-muted-foreground">File Type</dt>
-                                        <dd className="font-medium">PDF</dd>
+                                        <dt className="text-muted-foreground text-sm">File Type</dt>
+                                        <dd className="text-sm font-medium">PDF</dd>
                                     </div>
                                     <div className="flex justify-between">
-                                        <dt className="text-muted-foreground">Pages</dt>
-                                        <dd className="font-medium">{document.metadata?.pages}</dd>
+                                        <dt className="text-muted-foreground text-sm">Pages</dt>
+                                        <dd className="text-sm font-medium">{document.metadata?.pages}</dd>
                                     </div>
                                     <div className="flex justify-between">
-                                        <dt className="text-muted-foreground">Created At</dt>
-                                        <dd className="font-medium">
+                                        <dt className="text-muted-foreground text-sm">Created At</dt>
+                                        <dd className="text-sm font-medium">
                                             {format(new Date(document.metadata?.created_at as string), 'dd MMM yyyy HH:mm')}
                                         </dd>
                                     </div>
                                     <div className="flex justify-between">
-                                        <dt className="text-muted-foreground">Last Modified</dt>
-                                        <dd className="font-medium">
+                                        <dt className="text-muted-foreground text-sm">Last Modified</dt>
+                                        <dd className="text-sm font-medium">
                                             {format(new Date(document.metadata?.updated_at as string), 'dd MMM yyyy HH:mm')}
                                         </dd>
                                     </div>
