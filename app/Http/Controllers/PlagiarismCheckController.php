@@ -63,7 +63,7 @@ class PlagiarismCheckController extends Controller
                 "id" => Str::uuid(),
                 "filename" => $file->getClientOriginalName(),
                 "size" => $file->getSize(),
-                "path" => $file->store('documents'),
+                "path" => $file->store('documents', 'public'),
                 "uploaded_at" => now(),
                 "updated_at" => now(),
                 "created_at" => now(),

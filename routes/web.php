@@ -3,6 +3,7 @@
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlagiarismCheckController;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -32,11 +33,12 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get("/preview/{document}", function ($filename) {
-        $path = Storage::path($filename);
+        $path = public_path("storage/documents/{$filename}");
 
-        dd(File::exists($path), $path);
-
-        return response()->file($path);
+        return  Response::file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+        ]);
     });
 });
 

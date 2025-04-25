@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { formatFileSize } from '@/helpers/helpers';
 import AppLayout from '@/layouts/app-layout';
 import { Document, Group, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 
 interface PlagiarismCheckShowDocumentProps {
@@ -27,25 +27,19 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
         },
     ];
 
+    const { props }: { props: { ziggy: { url: string } } } = usePage();
+
+    const getPreivewPath = (path: string) => {
+        const arrPath = path.split('/');
+        return props.ziggy.url + '/preview/' + arrPath[arrPath.length - 1];
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={document.filename} />
             <div className="h-full rounded-xl p-4">
                 <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2">
-                    <Card className="flex h-[calc(100vh-150px)] flex-col p-0">
-                        <div className="border-b p-4">
-                            <h2 className="text-lg font-semibold">{document.filename}</h2>
-                        </div>
-                        <div className="flex-1 overflow-auto p-4">
-                            {/* {document.content ? (
-                                <PDFViewer className="h-full w-full">
-                                    <DocumentContent content={document.content} />
-                                </PDFViewer>
-                            ) : (
-                                <Skeleton className="h-full w-full rounded-lg" />
-                            )} */}
-                        </div>
-                    </Card>
+                    <iframe src={getPreivewPath(document.path)} width="100%" height="100%"></iframe>
 
                     {/* Kolom Kanan - Informasi Similarity & Metadata */}
                     <div className="flex h-[calc(100vh-150px)] flex-col gap-6 overflow-auto">
@@ -60,7 +54,15 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
                                             className="hover:bg-accent/50 flex items-center justify-between rounded-lg p-3 transition-colors"
                                         >
                                             <div className="flex-1 truncate pr-4">
-                                                <p className="truncate font-medium">{result.document2.filename}</p>
+                                                <p className="truncate font-medium">
+                                                    <Link
+                                                        href={route('plagiarism.show.document', [group.id, result.document2.id])}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        {result.document2.filename}
+                                                    </Link>
+                                                </p>
                                                 <p className="text-muted-foreground text-sm">{result.document2.metadata?.author}</p>
                                             </div>
                                             <div className="flex items-center gap-4">
