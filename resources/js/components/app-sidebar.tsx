@@ -4,24 +4,14 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { FileText, Folder, LayoutGrid } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        url: route('dashboard'),
-        icon: LayoutGrid,
-    },
-    {
         title: 'Periksa Plagiasi',
         url: route('plagiarism.index'),
         icon: FileText,
-    },
-    {
-        title: 'Grup Dokumen',
-        url: route('group.index'),
-        icon: Folder,
     },
 ];
 
