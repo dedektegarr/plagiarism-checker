@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import { formatFileSize } from '@/helpers/helpers';
 import AppLayout from '@/layouts/app-layout';
 import { Document, Group, type BreadcrumbItem } from '@/types';
@@ -37,76 +38,99 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={document.filename} />
-            <div className="h-full rounded-xl p-4">
+            <div className="h-full space-y-6 rounded-xl p-4">
+                {/* Header dengan Judul dan Rata-rata Plagiasi */}
+                <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold tracking-tight">Detail Dokumen</h2>
+                    {document.comparison_results?.length > 0 && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground text-sm">Rata-rata Plagiasi:</span>
+                            <Badge variant="destructive" className="px-3 py-1 text-lg">
+                                {Math.floor(
+                                    (document.comparison_results.reduce((sum, result) => sum + result.similarity_score, 0) /
+                                        document.comparison_results.length) *
+                                        100,
+                                )}
+                                %
+                            </Badge>
+                        </div>
+                    )}
+                </div>
+
                 <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2">
-                    <iframe src={getPreivewPath(document.path)} width="100%" height="100%"></iframe>
+                    <iframe src={getPreivewPath(document.path)} className="h-full w-full rounded-b-lg" title="Document preview" />
 
                     {/* Kolom Kanan - Informasi Similarity & Metadata */}
-                    <div className="flex h-[calc(100vh-150px)] flex-col gap-6 overflow-auto">
+                    <div className="flex h-[calc(100vh-180px)] flex-col gap-6 overflow-auto">
                         {/* Bagian Similarity */}
-                        <Card className="p-0">
-                            <div className="p-6">
-                                <h3 className="mb-4 text-lg font-semibold">Hasil Plagiasi</h3>
-                                <div className="space-y-4">
-                                    {document.comparison_results?.map((result, index) => (
-                                        <div
-                                            key={index}
-                                            className="hover:bg-accent/50 flex items-center justify-between rounded-lg p-3 transition-colors"
-                                        >
-                                            <div className="flex-1 truncate pr-4">
-                                                <p className="truncate font-medium">
-                                                    <Link
-                                                        href={route('plagiarism.show.document', [group.id, result.document2.id])}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        {result.document2.filename}
-                                                    </Link>
-                                                </p>
-                                                <p className="text-muted-foreground text-sm">{result.document2.metadata?.author}</p>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <Badge variant={Math.floor(result.similarity_score * 100) >= 30 ? 'destructive' : 'default'}>
-                                                    {Math.floor(result.similarity_score * 100)}%
-                                                </Badge>
-                                            </div>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg">Hasil Deteksi Plagiasi</CardTitle>
+                                <CardDescription>Dokumen yang memiliki kemiripan dengan dokumen ini</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4 p-0">
+                                {document.comparison_results?.map((result, index) => (
+                                    <div
+                                        key={index}
+                                        className="hover:bg-accent/50 flex items-center justify-between border-b p-4 transition-colors last:border-b-0"
+                                    >
+                                        <div className="flex-1 truncate pr-4">
+                                            <Link
+                                                href={route('plagiarism.show.document', [group.id, result.document2.id])}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-medium hover:underline"
+                                            >
+                                                {result.document2.filename}
+                                            </Link>
+                                            <p className="text-muted-foreground mt-1 text-sm">{result.document2.metadata?.author}</p>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                        <div className="flex items-center gap-4">
+                                            <Badge
+                                                variant={Math.floor(result.similarity_score * 100) >= 30 ? 'destructive' : 'outline'}
+                                                className="w-20 justify-center text-sm"
+                                            >
+                                                {Math.floor(result.similarity_score * 100)}%
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                ))}
+                            </CardContent>
                         </Card>
 
                         {/* Bagian Metadata */}
-                        <Card className="p-0">
-                            <div className="p-6">
-                                <h3 className="mb-4 text-lg font-semibold">Document Metadata</h3>
-                                <dl className="space-y-3">
-                                    <div className="flex justify-between">
-                                        <dt className="text-muted-foreground text-sm">File Size</dt>
-                                        <dd className="text-sm font-medium">{formatFileSize(document.size)}</dd>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg">Metadata Dokumen</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <Label className="text-muted-foreground text-sm">Ukuran File</Label>
+                                        <p className="font-medium">{formatFileSize(document.size)}</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <dt className="text-muted-foreground text-sm">File Type</dt>
-                                        <dd className="text-sm font-medium">PDF</dd>
+                                    <div className="space-y-1">
+                                        <Label className="text-muted-foreground text-sm">Tipe File</Label>
+                                        <p className="font-medium">PDF</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <dt className="text-muted-foreground text-sm">Pages</dt>
-                                        <dd className="text-sm font-medium">{document.metadata?.pages}</dd>
+                                    <div className="space-y-1">
+                                        <Label className="text-muted-foreground text-sm">Jumlah Halaman</Label>
+                                        <p className="font-medium">{document.metadata?.pages}</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <dt className="text-muted-foreground text-sm">Created At</dt>
-                                        <dd className="text-sm font-medium">
+                                    <div className="space-y-1">
+                                        <Label className="text-muted-foreground text-sm">Dibuat Pada</Label>
+                                        <p className="font-medium">
                                             {format(new Date(document.metadata?.created_at as string), 'dd MMM yyyy HH:mm')}
-                                        </dd>
+                                        </p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <dt className="text-muted-foreground text-sm">Last Modified</dt>
-                                        <dd className="text-sm font-medium">
+                                    <div className="space-y-1">
+                                        <Label className="text-muted-foreground text-sm">Terakhir Diubah</Label>
+                                        <p className="font-medium">
                                             {format(new Date(document.metadata?.updated_at as string), 'dd MMM yyyy HH:mm')}
-                                        </dd>
+                                        </p>
                                     </div>
-                                </dl>
-                            </div>
+                                </div>
+                            </CardContent>
                         </Card>
                     </div>
                 </div>
