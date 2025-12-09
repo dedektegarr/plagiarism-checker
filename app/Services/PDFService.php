@@ -32,6 +32,11 @@ class PDFService
         return $this->cleanText($this->pdf->getText());
     }
 
+    public function getRawText(): string
+    {
+        return preg_replace('/\s+/', ' ', $this->pdf->getText());
+    }
+
     private function cleanText(string $text): string
     {
         return preg_replace('/[^\w\s\.\-]/u', '', preg_replace('/\s+/', ' ', $text));

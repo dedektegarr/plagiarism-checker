@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge, badgeVariants } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { formatFileSize } from '@/helpers/helpers';
@@ -49,7 +49,7 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
                                 {Math.floor(
                                     (document.comparison_results.reduce((sum, result) => sum + result.similarity_score, 0) /
                                         document.comparison_results.length) *
-                                        100,
+                                    100,
                                 )}
                                 %
                             </Badge>
@@ -86,6 +86,12 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
                                             <p className="text-muted-foreground mt-1 text-sm">{result.document2.metadata?.author}</p>
                                         </div>
                                         <div className="flex items-center gap-4">
+                                            <Link
+                                                href={route('plagiarism.compare', [group.id, document.id, result.document2.id])}
+                                                className={badgeVariants({ variant: 'secondary' })}
+                                            >
+                                                Bandingkan
+                                            </Link>
                                             <Badge
                                                 variant={Math.floor(result.similarity_score * 100) >= 30 ? 'destructive' : 'outline'}
                                                 className="w-20 justify-center text-sm"
