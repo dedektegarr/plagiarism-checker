@@ -13,6 +13,7 @@ interface PlagiarismCheckCompareProps {
     originalText1?: string;
     originalText2?: string;
     threshold: number;
+    ngrams: number[];
 }
 
 interface TextChunk {
@@ -34,49 +35,33 @@ const getNGrams = (words: string[], n: number): Set<string> => {
     return ngrams;
 };
 
-const processText = (text: string, otherText: string): TextChunk[] => {
-    // Split by whitespace but keep the whitespace layout if possible, 
-    // or just simple split for now. 
-    // To preserve exact layout we might need sophisticated tokenization, 
-    // but standard split is usually "good enough" for plain text view.
+const processText = (text: string, otherText: string, ngramsList: number[]): TextChunk[] => {
     const words = text.split(/\s+/);
     const otherWords = otherText.split(/\s+/);
 
-    // Create normalized versions for comparison
     const normalizedWords = words.map(normalize);
     const normalizedOtherWords = otherWords.map(normalize);
 
-    // Generate N-grams from the OTHER document's normalized text
-    const otherBiGrams = getNGrams(normalizedOtherWords, 2);
-    const otherTriGrams = getNGrams(normalizedOtherWords, 3);
+    const otherNgramSets: Record<number, Set<string>> = {};
+    ngramsList.forEach((n) => {
+        otherNgramSets[n] = getNGrams(normalizedOtherWords, n);
+    });
 
     const matchIndices = new Set<number>();
 
-    // Check bi-grams
-    if (normalizedWords.length >= 2) {
-        for (let i = 0; i <= normalizedWords.length - 2; i++) {
-            const gram = normalizedWords.slice(i, i + 2).join(' ');
-            // Only consider if gram is not empty (e.g. " . " might normalize to empty strings)
-            if (gram.trim() !== '' && otherBiGrams.has(gram)) {
-                matchIndices.add(i);
-                matchIndices.add(i + 1);
+    ngramsList.forEach((n) => {
+        if (normalizedWords.length >= n) {
+            for (let i = 0; i <= normalizedWords.length - n; i++) {
+                const gram = normalizedWords.slice(i, i + n).join(' ');
+                if (gram.trim() !== '' && otherNgramSets[n].has(gram)) {
+                    for (let k = 0; k < n; k++) {
+                        matchIndices.add(i + k);
+                    }
+                }
             }
         }
-    }
+    });
 
-    // Check tri-grams
-    if (normalizedWords.length >= 3) {
-        for (let i = 0; i <= normalizedWords.length - 3; i++) {
-            const gram = normalizedWords.slice(i, i + 3).join(' ');
-            if (gram.trim() !== '' && otherTriGrams.has(gram)) {
-                matchIndices.add(i);
-                matchIndices.add(i + 1);
-                matchIndices.add(i + 2);
-            }
-        }
-    }
-
-    // Group words into chunks based on highlight status
     const chunks: TextChunk[] = [];
     if (words.length === 0 || (words.length === 1 && words[0] === '')) return chunks;
 
@@ -111,6 +96,7 @@ export default function PlagiarismCheckCompare({
     originalText1 = '',
     originalText2 = '',
     threshold,
+    ngrams = [2, 3],
 }: PlagiarismCheckCompareProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -133,10 +119,10 @@ export default function PlagiarismCheckCompare({
         const text2 = originalText2 || document2.metadata?.preprocessed_text || '';
 
         return {
-            doc1Chunks: processText(text1, text2),
-            doc2Chunks: processText(text2, text1)
+            doc1Chunks: processText(text1, text2, ngrams),
+            doc2Chunks: processText(text2, text1, ngrams),
         };
-    }, [document1, document2, originalText1, originalText2]);
+    }, [document1, document2, originalText1, originalText2, ngrams]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

@@ -199,6 +199,7 @@ class PlagiarismCheckController extends Controller
             'originalText2' => $originalText2,
             'comparisonResult' => $comparisonResult,
             'threshold' => config('plagiarism.similarity_threshold'),
+            'ngrams' => config('plagiarism.ngrams'),
         ]);
     }
 }
