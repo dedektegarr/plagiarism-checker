@@ -83,10 +83,23 @@ export interface ComparisonResult {
     updated_at: string;
 }
 
+export interface Comparison {
+    id: string;
+    group_id: string;
+    comparison_time?: number | null;
+    processing_time?: number | null;
+    status: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Group {
     id: string;
     user_id: string;
     name: string;
     docs: Document[];
+    comparisons: Comparison[];
+    number_of_documents?: number; // From index page mapping
+    created_at?: string;
     updated_at: string;
 }

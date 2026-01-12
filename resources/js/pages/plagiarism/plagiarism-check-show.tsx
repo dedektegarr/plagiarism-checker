@@ -70,6 +70,23 @@ export default function PlagiarismCheckShow({ group, threshold }: PlagiarismChec
                    </p>
                 </div>
 
+                {group.comparisons && group.comparisons.length > 0 && (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        {group.comparisons[0].processing_time && (
+                             <div className="flex flex-col rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+                                <span className="text-sm font-medium text-muted-foreground">Waktu Preprocessing</span>
+                                <span className="text-lg font-bold">{group.comparisons[0].processing_time} detik</span>
+                            </div>
+                        )}
+                        {group.comparisons[0].comparison_time && (
+                            <div className="flex flex-col rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+                                <span className="text-sm font-medium text-muted-foreground">Waktu Comparison</span>
+                                <span className="text-lg font-bold">{group.comparisons[0].comparison_time} ms</span>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <DocumentLists
                     threshold={threshold}
                     isPreprocessing={isPreprocessing}

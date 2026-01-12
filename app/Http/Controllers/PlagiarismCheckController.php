@@ -138,7 +138,7 @@ class PlagiarismCheckController extends Controller
 
     public function show(Group $group)
     {
-        $group->load(['documents', 'documents.metadata', 'documents.comparisonResults']);
+        $group->load(['documents', 'documents.metadata', 'documents.comparisonResults', 'comparisons']);
 
         $group['docs'] = $group->documents
             ->map(function ($document) {
