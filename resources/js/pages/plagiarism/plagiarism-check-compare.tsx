@@ -12,6 +12,7 @@ interface PlagiarismCheckCompareProps {
     comparisonResult: ComparisonResult;
     originalText1?: string;
     originalText2?: string;
+    threshold: number;
 }
 
 interface TextChunk {
@@ -109,6 +110,7 @@ export default function PlagiarismCheckCompare({
     comparisonResult,
     originalText1 = '',
     originalText2 = '',
+    threshold,
 }: PlagiarismCheckCompareProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -145,10 +147,10 @@ export default function PlagiarismCheckCompare({
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground">Tingkat Kemiripan:</span>
                         <Badge
-                            variant={comparisonResult.similarity_score >= 0.3 ? 'destructive' : 'outline'}
-                            className="px-3 py-1 text-lg"
+                            variant={comparisonResult.similarity_score * 100 >= threshold ? 'destructive' : 'outline'}
+                            className="px-3 py-1"
                         >
-                            {Math.floor(comparisonResult.similarity_score * 100)}%
+                            {comparisonResult.similarity_score * 100 >= threshold ? 'Plagiat' : 'Tidak Plagiat'} ({Math.floor(comparisonResult.similarity_score * 100)}%)
                         </Badge>
                     </div>
                 </div>

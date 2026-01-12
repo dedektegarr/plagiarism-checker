@@ -9,9 +9,10 @@ import { toast } from 'sonner';
 
 interface PlagiarismCheckShowProps {
     group: Group;
+    threshold: number;
 }
 
-export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps) {
+export default function PlagiarismCheckShow({ group, threshold }: PlagiarismCheckShowProps) {
     usePoll(5000);
     const [isCalculating, setIsCalculating] = useState<boolean>(false);
 
@@ -63,7 +64,14 @@ export default function PlagiarismCheckShow({ group }: PlagiarismCheckShowProps)
                     </Button>
                 </div>
 
+                <div className="rounded-lg border bg-blue-50/50 p-4 text-sm text-blue-900 dark:bg-blue-900/10 dark:text-blue-200">
+                   <p>
+                       <span className="font-semibold">Info:</span> Dokumen dianggap <strong>Plagiat</strong> jika tingkat kemiripan ≥ {threshold}%.
+                   </p>
+                </div>
+
                 <DocumentLists
+                    threshold={threshold}
                     isPreprocessing={isPreprocessing}
                     documents={group.docs}
                     className={!group.docs.every((d) => d.metadata) ? 'pointer-events-none opacity-50' : ''}

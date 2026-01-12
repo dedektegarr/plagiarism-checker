@@ -9,9 +9,10 @@ interface DocumentListsProps {
     documents: Document[];
     className?: string;
     isPreprocessing?: boolean;
+    threshold: number;
 }
 
-export default function DocumentLists({ documents, className, isPreprocessing = false }: DocumentListsProps) {
+export default function DocumentLists({ documents, className, isPreprocessing = false, threshold }: DocumentListsProps) {
     const SkeletonDocumentLists = () => (
         <Card className="relative overflow-hidden p-6">
             <div className="bg-background/50 absolute inset-0 backdrop-blur-sm" />
@@ -52,7 +53,7 @@ export default function DocumentLists({ documents, className, isPreprocessing = 
                 <Card className={cn('p-6', className)}>
                     <div className="flex flex-col gap-4">
                         <div className="text-muted-foreground grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium">
-                            <div className="col-span-6 flex items-center gap-2">
+                            <div className="col-span-4 flex items-center gap-2">
                                 <FileText className="h-4 w-4" />
                                 Nama Dokumen
                             </div>
@@ -64,11 +65,12 @@ export default function DocumentLists({ documents, className, isPreprocessing = 
                                 <Archive className="h-4 w-4" />
                                 Ukuran
                             </div>
-                            <div className="col-span-1">Status</div>
+                            <div className="col-span-1 text-center">Kemiripan</div>
+                            <div className="col-span-2 text-center">Status</div>
                         </div>
 
                         {documents.map((document) => (
-                            <DocumentListItem document={document} key={document.id} />
+                            <DocumentListItem document={document} key={document.id} threshold={threshold} />
                         ))}
                     </div>
                 </Card>

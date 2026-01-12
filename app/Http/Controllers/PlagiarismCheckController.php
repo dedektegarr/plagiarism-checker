@@ -153,6 +153,7 @@ class PlagiarismCheckController extends Controller
 
         return Inertia::render('plagiarism/plagiarism-check-show', [
             'group' => $group,
+            'threshold' => config('plagiarism.similarity_threshold'),
         ]);
     }
 
@@ -197,6 +198,7 @@ class PlagiarismCheckController extends Controller
             'originalText1' => $originalText1,
             'originalText2' => $originalText2,
             'comparisonResult' => $comparisonResult,
+            'threshold' => config('plagiarism.similarity_threshold'),
         ]);
     }
 }
