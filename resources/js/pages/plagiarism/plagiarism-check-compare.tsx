@@ -129,7 +129,7 @@ export default function PlagiarismCheckCompare({
             <Head title="Perbandingan Dokumen" />
             <div className="h-full space-y-6 rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold tracking-tight">Perbandingan Dokumen</h2>
+                    <h2 className="text-lg font-bold tracking-tight">Perbandingan Dokumen</h2>
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground">Tingkat Kemiripan:</span>
                         <Badge

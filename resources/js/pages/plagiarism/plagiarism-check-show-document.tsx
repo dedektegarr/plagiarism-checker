@@ -41,11 +41,11 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
             <div className="h-full space-y-6 rounded-xl p-4">
                 {/* Header dengan Judul dan Rata-rata Plagiasi */}
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold tracking-tight">Detail Dokumen</h2>
+                    <h2 className="text-lg font-bold tracking-tight">Detail Dokumen</h2>
                     {document.comparison_results?.length > 0 && (
                         <div className="flex items-center gap-2">
                             <span className="text-muted-foreground text-sm">Rata-rata Plagiasi:</span>
-                            <Badge variant="destructive" className="px-3 py-1 text-lg">
+                            <Badge variant="destructive" className="px-3 py-1">
                                 {Math.floor(
                                     (document.comparison_results.reduce((sum, result) => sum + result.similarity_score, 0) /
                                         document.comparison_results.length) *
@@ -113,19 +113,19 @@ export default function PlagiarismCheckShowDocument({ group, document }: Plagiar
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <Label className="text-muted-foreground text-sm">Ukuran File</Label>
-                                        <p className="font-medium">{formatFileSize(document.size)}</p>
+                                        <p className="font-medium text-sm">{formatFileSize(document.size)}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <Label className="text-muted-foreground text-sm">Tipe File</Label>
-                                        <p className="font-medium">PDF</p>
+                                        <p className="font-medium text-sm">PDF</p>
                                     </div>
                                     <div className="space-y-1">
                                         <Label className="text-muted-foreground text-sm">Jumlah Halaman</Label>
-                                        <p className="font-medium">{document.metadata?.pages}</p>
+                                        <p className="font-medium text-sm">{document.metadata?.pages}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <Label className="text-muted-foreground text-sm">Dibuat Pada</Label>
-                                        <p className="font-medium">
+                                        <p className="font-medium text-sm">
                                             {format(new Date(document.metadata?.created_at as string), 'dd MMM yyyy HH:mm')}
                                         </p>
                                     </div>
