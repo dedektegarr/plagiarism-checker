@@ -202,4 +202,20 @@ class PlagiarismCheckController extends Controller
             'ngrams' => config('plagiarism.ngrams'),
         ]);
     }
+
+    public function update(Request $request, Group $group, Document $document)
+    {
+        $validated = $request->validate([
+            'filename' => 'required|string|max:255',
+        ]);
+
+        // Ensure the filename ends with .pdf if it was removed
+        if (!Str::endsWith($validated['filename'], '.pdf')) {
+            $validated['filename'] .= '.pdf';
+        }
+
+        $document->update($validated);
+
+        return back();
+    }
 }

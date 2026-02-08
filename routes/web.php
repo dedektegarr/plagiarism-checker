@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post("/upload", [PlagiarismCheckController::class, "upload"])->name("plagiarism.upload");
         Route::get("/{group}", [PlagiarismCheckController::class, "show"])->name("plagiarism.show");
         Route::get("/{group}/{document}", [PlagiarismCheckController::class, "showDocument"])->name("plagiarism.show.document");
+        Route::put("/{group}/{document}", [PlagiarismCheckController::class, "update"])->name("plagiarism.update-document");
         Route::get("/{group}/compare/{document1}/{document2}", [PlagiarismCheckController::class, "compare"])->name("plagiarism.compare");
         Route::post("/{group}/calculate", [PlagiarismCheckController::class, "calculate"])->name("plagiarism.calculate");
     });
