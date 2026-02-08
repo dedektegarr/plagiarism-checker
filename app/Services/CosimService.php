@@ -26,7 +26,7 @@ class CosimService
 
     private function requestApi(string $endpoint, array $payload, string $errorMessage): ?array
     {
-        $response = Http::timeout(15)->post("{$this->baseUrl}/{$endpoint}", $payload);
+        $response = Http::timeout(60)->post("{$this->baseUrl}/{$endpoint}", $payload);
 
         if ($response->failed()) {
             Log::error("$errorMessage: " . ($response->json()["error"] ?? 'Unknown error'));
