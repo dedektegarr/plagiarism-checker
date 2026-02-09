@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ComparisonResult;
 use App\Models\Document;
 use App\Models\Group;
-use App\Services\CosimService;
+use App\Jobs\ProcessSimilarityCheck;
 use App\Services\PreprocessingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,52 +88,17 @@ class PlagiarismCheckController extends Controller
         return to_route('plagiarism.show', $group->id);
     }
 
-    public function calculate(Group $group, CosimService $cosimService)
+    public function calculate(Group $group)
     {
-        $start = now()->getPreciseTimestamp(3);
-
         $comparison = $group->comparisons()->first();
-        $documents = $group->documents()->whereHas('metadata')->with('metadata')->get()->pluck('metadata.preprocessed_text', 'id');
-        $documentIds = $documents->keys()->values();
-
-        $results = $cosimService->computeSimilarity($documents->values()->toArray())['similarity_matrix'];
-
-        $insertData = [];
-
-        foreach ($results as $i => $rows) {
-            // Remove self-comparison by current index
-            $filteredRows = collect($rows)->filter(function ($value, $key) use ($i) {
-                return $key != $i;
-            })->values()->toArray();
-
-            foreach ($filteredRows as $j => $value) {
-                $filteredIds = $documentIds->filter(function ($value, $key) use ($i) {
-                    return $key != $i;
-                })->values()->toArray();
-
-                $insertData[] = [
-                    'id' => Str::uuid(),
-                    'comparison_id' => $comparison->id,
-                    'document_1_id' => $documentIds[$i],
-                    'document_2_id' => $filteredIds[$j],
-                    'similarity_score' => $value,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-        }
-
-        ComparisonResult::insertOrIgnore($insertData);
-
-        $end = now()->getPreciseTimestamp(3);
-        $duration = $end - $start;
-
+        
         $comparison->update([
-            'status' => 'completed',
-            'comparison_time' => $duration,
+            'status' => 'processing',
         ]);
 
-        return to_route('plagiarism.show', $group->id);
+        ProcessSimilarityCheck::dispatch($group, $comparison);
+
+        return to_route('plagiarism.show', $group->id)->with('message', 'Similarity check started in background.');
     }
 
     public function show(Group $group)
