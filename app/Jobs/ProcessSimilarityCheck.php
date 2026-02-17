@@ -56,7 +56,17 @@ class ProcessSimilarityCheck implements ShouldQueue
             return;
         }
 
-        $results = $cosimService->computeSimilarity($documents->values()->toArray())['similarity_matrix'];
+        $response = $cosimService->computeSimilarity($documents->values()->toArray());
+
+        if (!$response || !isset($response['similarity_matrix'])) {
+             $this->comparison->update([
+                'status' => 'failed',
+                'comparison_time' => 0,
+            ]);
+            return;
+        }
+
+        $results = $response['similarity_matrix'];
 
         $insertData = [];
 

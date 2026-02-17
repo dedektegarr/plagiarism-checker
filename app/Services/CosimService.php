@@ -29,7 +29,7 @@ class CosimService
         $response = Http::timeout(60)->post("{$this->baseUrl}/{$endpoint}", $payload);
 
         if ($response->failed()) {
-            Log::error("$errorMessage: " . ($response->json()["error"] ?? 'Unknown error'));
+            Log::error("$errorMessage: " . $response->body());
             return null;
         }
 
