@@ -13,7 +13,7 @@ services:
       # This tells FrankenPHP to listen on port 8000
       - SERVER_NAME=:8000
     ports:
-      - "8000:8000"
+      - "8001:8000"
       # Expose Vite port in case you run `npm run dev` inside this container
       - "5173:5173"
     volumes:
