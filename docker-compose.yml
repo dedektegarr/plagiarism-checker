@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-frankenphp
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /app
+    environment:
+      # This tells FrankenPHP to listen on port 8000
+      - SERVER_NAME=:8000
+    ports:
+      - "8000:8000"
+      # Expose Vite port in case you run `npm run dev` inside this container
+      - "5173:5173"
+    volumes:
+      - ./:/app
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
